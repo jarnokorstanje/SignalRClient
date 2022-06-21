@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
     "serve": "^12.0.0",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2",

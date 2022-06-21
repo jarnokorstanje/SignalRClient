@@ -9,19 +9,6 @@ const connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-async function start() {
-    try {
-        await connection.start();
-        console.log("SignalR Connected.");
-    } catch (err) {
-        console.log(err);
-    }
-};
-
-connection.onclose(async () => {
-    await start();
-});
-
 connection.on("MessageReceived", (message) => {
     const dateObj = new Date(message.timestamp);
     let li = document.createElement("li");
@@ -29,4 +16,4 @@ connection.on("MessageReceived", (message) => {
     document.getElementById("messageList").appendChild(li);
 });
 
-start();
+connection.start().catch((error) => console.error(error));
