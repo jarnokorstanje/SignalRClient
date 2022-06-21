@@ -1,5 +1,8 @@
 import * as signalR from "@microsoft/signalr";
 
+//var uuid = require("uuid");
+//var id = uuid.v4();
+
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:49153/messagehub")
     .withAutomaticReconnect()
@@ -12,7 +15,6 @@ async function start() {
         console.log("SignalR Connected.");
     } catch (err) {
         console.log(err);
-        //setTimeout(start, 5000);
     }
 };
 
@@ -21,7 +23,10 @@ connection.onclose(async () => {
 });
 
 connection.on("MessageReceived", (message) => {
-    console.log(message);
+    const dateObj = new Date(message.timestamp);
+    let li = document.createElement("li");
+    li.textContent = `${message.caller}: ${message.text} (${dateObj.toLocaleTimeString('nl-NL') })`;
+    document.getElementById("messageList").appendChild(li);
 });
 
 start();
