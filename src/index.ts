@@ -1,6 +1,6 @@
 import * as signalR from "@microsoft/signalr";
 
-const userInput = document.getElementById("userInput");
+const userInput = document.getElementById("userInput") as HTMLInputElement;
 const connectButton = document.getElementById("connectButton");
 const messageList = document.getElementById("messageList");
 
@@ -10,9 +10,7 @@ const connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-connectButton.addEventListener("click", connect);
-
-function connect() {
+function connect(): void {
     connection.start()
         .catch((error) => console.error(error))
         .then(() => {
@@ -23,7 +21,7 @@ function connect() {
                 console.error(e.toString());
             }
         });
-};
+}
 
 //document.getElementById("leave-group").addEventListener("click", async (event) => {
 //    var groupName = document.getElementById("group-name").value;
@@ -36,12 +34,12 @@ function connect() {
 //    event.preventDefault();
 //});
 
+connectButton.addEventListener("click", connect);
+
 connection.on("message", (message) => {
     console.log(message);
     const dateObj = new Date(message.timestamp);
-    let li = document.createElement("li");
+    const li = document.createElement("li");
     li.textContent = `(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: ${message.text}`;
     messageList.appendChild(li);
 });
-
-
