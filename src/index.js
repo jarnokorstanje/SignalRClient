@@ -1,7 +1,8 @@
 import * as signalR from "@microsoft/signalr";
 
-//var uuid = require("uuid");
-//var id = uuid.v4();
+const userInput = document.getElementById("userInput");
+const connectButton = document.getElementById("connectButton");
+const messageList = document.getElementById("messageList");
 
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:49153/messagehub")
@@ -9,11 +10,38 @@ const connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-connection.on("MessageReceived", (message) => {
+connectButton.addEventListener("click", connect);
+
+function connect() {
+    connection.start()
+        .catch((error) => console.error(error))
+        .then(() => {
+            try {
+                connection.invoke("AddToGroup", userInput.value);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+        });
+};
+
+//document.getElementById("leave-group").addEventListener("click", async (event) => {
+//    var groupName = document.getElementById("group-name").value;
+//    try {
+//        await connection.invoke("RemoveFromGroup", groupName);
+//    }
+//    catch (e) {
+//        console.error(e.toString());
+//    }
+//    event.preventDefault();
+//});
+
+connection.on("message", (message) => {
+    console.log(message);
     const dateObj = new Date(message.timestamp);
     let li = document.createElement("li");
-    li.textContent = `${message.caller}: ${message.text} (${dateObj.toLocaleTimeString('nl-NL') })`;
-    document.getElementById("messageList").appendChild(li);
+    li.textContent = `(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: ${message.text}`;
+    messageList.appendChild(li);
 });
 
-connection.start().catch((error) => console.error(error));
+
