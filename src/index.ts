@@ -23,23 +23,15 @@ function connect(): void {
         });
 }
 
-//document.getElementById("leave-group").addEventListener("click", async (event) => {
-//    var groupName = document.getElementById("group-name").value;
-//    try {
-//        await connection.invoke("RemoveFromGroup", groupName);
-//    }
-//    catch (e) {
-//        console.error(e.toString());
-//    }
-//    event.preventDefault();
-//});
-
 connectButton.addEventListener("click", connect);
 
 connection.on("message", (message) => {
+    connection.invoke("MessageResponse", message.guid);
+    
     console.log(message);
+
     const dateObj = new Date(message.timestamp);
     const li = document.createElement("li");
-    li.textContent = `(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: ${message.text}`;
+    li.textContent = `${message.guid} (${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: ${message.text}`;
     messageList.appendChild(li);
 });
