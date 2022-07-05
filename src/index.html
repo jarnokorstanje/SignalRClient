@@ -2,18 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>SignalR JavaScript client</title>
+    <title>SignalR TypeScript Client</title>
 </head>
 <body>
     <h1>
-        SignalR JavaScript Client
+        SignalR TypeScript Client
     </h1>
 
-    <!--<div id="divMessages" class="messages"></div>-->
     <div class="input-zone">
-        <label id="userLabel" for="userInput">Username:</label>
+        <label id="userLabel" for="userInput">Gebruiker:</label>
         <input id="userInput" class="input-zone-input" type="text" />
-        <button id="connectButton">Connect</button>
+        <button id="connectButton">Start connectie</button>
+        <button id="disconnectButton" style="display: none;">Stop connectie</button>
+        <p id="statusText" style="display: none;">Verbonden</p>
     </div>
 
     <ul id="messageList"></ul>

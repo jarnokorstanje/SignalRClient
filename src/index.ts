@@ -2,6 +2,8 @@ import * as signalR from "@microsoft/signalr";
 
 const userInput = document.getElementById("userInput") as HTMLInputElement;
 const connectButton = document.getElementById("connectButton");
+const disconnectButton = document.getElementById("disconnectButton");
+const statusText = document.getElementById("statusText");
 const messageList = document.getElementById("messageList");
 
 const connection = new signalR.HubConnectionBuilder()
@@ -16,14 +18,25 @@ function connect(): void {
         .then(() => {
             try {
                 connection.invoke("AddToGroup", userInput.value);
+                disconnectButton.style.display = "inline";  
+                connectButton.style.display = "none";
+                statusText.style.display = "inline";
             }
-            catch (e) {
-                console.error(e.toString());
+            catch(error) {
+                console.error(error);
             }
         });
 }
 
-connectButton.addEventListener("click", connect);
+function disconnect(): void {
+    connection.stop()
+        .catch((error) => console.error(error))
+        .then(() => {
+            disconnectButton.style.display = "none";  
+            connectButton.style.display = "inline";
+            statusText.style.display = "none";  
+        });
+}
 
 connection.on("message", (message) => {
     connection.invoke("MessageResponse", message.guid);
@@ -33,12 +46,18 @@ connection.on("message", (message) => {
 });
 
 connection.on("missedMessages", (missedMessages: Message[]) => {
-    printListItem("Verbonden met SignalR groep, gemiste berichten:");
+    if (missedMessages.length > 0) {
+        printListItem("Verbonden met SignalR, gemiste berichten:");
+        missedMessages.forEach(message => {
+            const dateObj = new Date(message.timestamp);
+            printListItem(`(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: "${message.text}"`);
+        });
+    } else {
+        printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
+    }
     
-    missedMessages.forEach(message => {
-        const dateObj = new Date(message.timestamp);
-        printListItem(`(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: "${message.text}"`);
-    });
+    
+    
 });
 
 function printListItem(text: string) {
@@ -46,6 +65,10 @@ function printListItem(text: string) {
     li.textContent = text;
     messageList.appendChild(li);
 }
+
+connectButton.addEventListener("click", connect);
+
+disconnectButton.addEventListener("click", disconnect);
 
 interface Message {
     guid: string;
