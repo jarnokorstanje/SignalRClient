@@ -27,11 +27,30 @@ connectButton.addEventListener("click", connect);
 
 connection.on("message", (message) => {
     connection.invoke("MessageResponse", message.guid);
-    
-    console.log(message);
 
     const dateObj = new Date(message.timestamp);
-    const li = document.createElement("li");
-    li.textContent = `${message.guid} (${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: ${message.text}`;
-    messageList.appendChild(li);
+    printListItem(`(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: "${message.text}"`);
 });
+
+connection.on("missedMessages", (missedMessages: Message[]) => {
+    printListItem("Verbonden met SignalR groep, gemiste berichten:");
+    
+    missedMessages.forEach(message => {
+        const dateObj = new Date(message.timestamp);
+        printListItem(`(${dateObj.toLocaleTimeString('nl-NL')}) ${message.caller}: "${message.text}"`);
+    });
+});
+
+function printListItem(text: string) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    messageList.appendChild(li);
+}
+
+interface Message {
+    guid: string;
+    text: string;
+    caller: string;
+    receiver: string;
+    timestamp: string;
+}
