@@ -2,8 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { Message } from "./messageInterface";
 import { GUI } from "./gui";
 
-//TODO: - klasse voor signalR
-// - then structuren omschrijven naar async await indien mogelijk
+//TODO: klasse voor signalR
 
 const userInput: HTMLInputElement  = document.getElementById("userInput") as HTMLInputElement;
 const connectButton: HTMLButtonElement = document.getElementById("connectButton") as HTMLButtonElement;
@@ -16,31 +15,19 @@ const connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-function connect(): void {
-    connection.start()
-        .catch((error) => console.error(error))
-        .then(() => {
-            try {
-                connection.invoke("AddToGroup", userInput.value);
-                gui.setConnected();
-            }
-            catch(error) {
-                console.error(error);
-            }
-        });
+async function connect(): Promise<void> {
+    await connection.start().catch((error) => console.error(error));
+    await connection.invoke("AddToGroup", userInput.value).catch((error) => console.error(error));
+    gui.setConnected();
 }
 
-function disconnect(): void {
-    connection.stop()
-        .catch((error) => console.error(error))
-        .then(() => {
-            gui.setDisconnected();
-        });
+async function disconnect(): Promise<void> {
+    await connection.stop().catch((error) => console.error(error));
+    gui.setDisconnected();
 }
 
 connection.on("message", (message) => {
     connection.invoke("MessageResponse", message.guid);
-
     gui.printMessage(message);
 });
 
