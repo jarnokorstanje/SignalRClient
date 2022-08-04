@@ -25,14 +25,10 @@ export class GUI {
     }
 
     printMissedMessages(missedMessages: Message[]) {
-        if (missedMessages.length > 0) {
-            this.printListItem("Verbonden met SignalR, gemiste berichten:");
-            missedMessages.forEach(message => {
-                this.printMessage(message);
-            });
-        } else {
-            this.printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
-        }      
+        this.printListItem("Verbonden met SignalR, gemiste berichten:");
+        missedMessages.forEach(message => {
+            this.printMessage(message);
+        });
     }
 
     setConnected() {

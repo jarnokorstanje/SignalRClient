@@ -16,9 +16,12 @@ const connection = new signalR.HubConnectionBuilder()
     .build();
 
 async function connect(): Promise<void> {
-    await connection.start().catch((error) => console.error(error));
+    await connection.start().catch((error) => { 
+        console.error(error);
+        gui.printListItem(error);
+    });
+    
     await connection.invoke("AddToGroup", userInput.value).catch((error) => console.error(error));
-    gui.setConnected();
 }
 
 async function disconnect(): Promise<void> {
@@ -26,15 +29,33 @@ async function disconnect(): Promise<void> {
     gui.setDisconnected();
 }
 
+connectButton.addEventListener("click", connect);
+
+disconnectButton.addEventListener("click", disconnect);
+
+// SignalR client methods:
 connection.on("message", (message) => {
+    // return guid of message to delete at server 
     connection.invoke("MessageResponse", message.guid);
     gui.printMessage(message);
 });
 
 connection.on("missedMessages", (missedMessages: Message[]) => {
-    gui.printMissedMessages(missedMessages);
+    gui.setConnected();
+
+    if (missedMessages.length > 0) {
+        gui.printMissedMessages(missedMessages);
+        
+        // create array of guids of missedmessages
+        const guidArray: string[] = [];
+    
+        missedMessages.forEach(message => {
+            guidArray.push(message.guid);
+        });
+
+        // return guid of each missedmessage (to delete them at the server)
+        connection.invoke("MissedMessagesResponse", guidArray);
+    } else {
+        gui.printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
+    }
 });
-
-connectButton.addEventListener("click", connect);
-
-disconnectButton.addEventListener("click", disconnect);
