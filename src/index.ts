@@ -1,10 +1,16 @@
 import * as signalR from "@microsoft/signalr";
+import { Message } from "./messageInterface";
 
-const userInput = document.getElementById("userInput") as HTMLInputElement;
-const connectButton = document.getElementById("connectButton");
-const disconnectButton = document.getElementById("disconnectButton");
-const statusText = document.getElementById("statusText");
-const messageList = document.getElementById("messageList");
+//TODO: Klasse voor GUI anapassingen
+//- classe voor signalR
+// - then structuren omschrijven naar async await indien mogelijk
+
+
+const userInput: HTMLInputElement  = document.getElementById("userInput") as HTMLInputElement;
+const connectButton: HTMLButtonElement = document.getElementById("connectButton") as HTMLButtonElement;
+const disconnectButton: HTMLButtonElement = document.getElementById("disconnectButton") as HTMLButtonElement;
+const statusText: HTMLParagraphElement = document.getElementById("statusText") as HTMLParagraphElement;
+const messageList: HTMLUListElement = document.getElementById("messageList") as HTMLUListElement;
 
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:49153/messagehub")
@@ -32,9 +38,10 @@ function disconnect(): void {
     connection.stop()
         .catch((error) => console.error(error))
         .then(() => {
+            printListItem("Verbinding verbroken");
             disconnectButton.style.display = "none";  
             connectButton.style.display = "inline";
-            statusText.style.display = "none";  
+            statusText.style.display = "none";
         });
 }
 
@@ -54,10 +61,7 @@ connection.on("missedMessages", (missedMessages: Message[]) => {
         });
     } else {
         printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
-    }
-    
-    
-    
+    }      
 });
 
 function printListItem(text: string) {
@@ -70,10 +74,3 @@ connectButton.addEventListener("click", connect);
 
 disconnectButton.addEventListener("click", disconnect);
 
-interface Message {
-    guid: string;
-    text: string;
-    caller: string;
-    receiver: string;
-    timestamp: string;
-}
