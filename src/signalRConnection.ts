@@ -3,8 +3,7 @@ import { GUI } from "./gui";
 import { Message } from "./message";
 
 export class SignalRConnection {
-    // private maken
-    connection: signalR.HubConnection;
+    private connection: signalR.HubConnection;
 
     constructor(handleMessage: (message: Message) => void, handleMissedMessages: (missedMessages: Message[]) => void) {
         this.connection = new signalR.HubConnectionBuilder()
@@ -32,5 +31,11 @@ export class SignalRConnection {
         GUI.setDisconnected();
     }
 
-    //invoke doorgeefluiken
+    public async invokeMessageResponse(messageId: string) {
+        await this.connection.invoke("MessageResponse", messageId);
+    }
+
+    public async invokeMissedMessagesResponse(messageIds: string[]) {
+        await this.connection.invoke("MissedMessagesResponse", messageIds);
+    }
 }

@@ -14,7 +14,7 @@ connectButton.addEventListener("click", () => {signalRConnection.connect(userInp
 disconnectButton.addEventListener("click", signalRConnection.disconnect);
 
 function handleMessage(message: Message) {
-    signalRConnection.connection.invoke("MessageResponse", message.guid);
+    signalRConnection.invokeMessageResponse(message.guid);
     GUI.printMessage(message);
 }
 
@@ -25,14 +25,14 @@ function handleMissedMessages(missedMessages: Message[]) {
         GUI.printMissedMessages(missedMessages);
         
         // create array of guids of missedmessages
-        const guidArray: string[] = [];
+        const missedMessageIds: string[] = [];
     
         missedMessages.forEach(message => {
-            guidArray.push(message.guid);
+            missedMessageIds.push(message.guid);
         });
 
-        // return guid of each missedmessage (to delete them at the server)
-        signalRConnection.connection.invoke("MissedMessagesResponse", guidArray);
+        // return guid of each missedmessage (to let the server know it has been received)
+        signalRConnection.invokeMissedMessagesResponse(missedMessageIds);
     } else {
         GUI.printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
     }
