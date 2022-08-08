@@ -18,24 +18,36 @@ export class SignalRConnection {
     }
 
     public async connect(username: string): Promise<void> {
-        await this.connection.start().catch((error) => { 
+        try {
+            await this.connection.start();
+            await this.connection.invoke("AddToGroup", username);
+        } catch(error) {
             console.error(error);
-            GUI.printListItem(error);
-        });
-
-        await this.connection.invoke("AddToGroup", username).catch((error) => console.error(error));
+        }
     }
 
     public async disconnect(): Promise<void> {
-        await this.connection.stop().catch((error) => console.error(error));
-        GUI.setDisconnectedStyle();
+        try {
+            await this.connection.stop();
+            GUI.setDisconnectedStyle();
+        } catch(error) {
+            console.error(error);
+        }
     }
 
-    public async invokeMessageResponse(messageId: string) {
-        await this.connection.invoke("MessageResponse", messageId);
+    public async invokeMessageResponse(messageId: string): Promise<void> {
+        try {
+            await this.connection.invoke("MessageResponse", messageId);
+        } catch(error) {
+            console.error(error);
+        }
     }
 
-    public async invokeMissedMessagesResponse(messageIds: string[]) {
-        await this.connection.invoke("MissedMessagesResponse", messageIds);
+    public async invokeMissedMessagesResponse(messageIds: string[]): Promise<void> {
+        try {
+            await this.connection.invoke("MissedMessagesResponse", messageIds);
+        } catch(error) {
+            console.error(error);
+        }
     }
 }

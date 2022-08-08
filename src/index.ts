@@ -11,7 +11,7 @@ const signalRConnection: SignalRConnection = new SignalRConnection(handleMessage
 
 connectButton.addEventListener("click", () => {signalRConnection.connect(userInput.value);});
 
-disconnectButton.addEventListener("click", signalRConnection.disconnect);
+disconnectButton.addEventListener("click", () => {signalRConnection.disconnect();});
 
 function handleMessage(message: Message) {
     signalRConnection.invokeMessageResponse(message.guid);
