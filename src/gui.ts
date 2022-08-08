@@ -1,4 +1,4 @@
-import { Message } from "./messageInterface";
+import { Message } from "./message";
 
 export abstract class GUI {
     private static messageList: HTMLUListElement = document.getElementById("messageList") as HTMLUListElement;

@@ -1,4 +1,4 @@
-import { Message } from "./messageInterface";
+import { Message } from "./message";
 import { GUI } from "./gui";
 import { SignalRConnection } from "./signalRConnection";
 

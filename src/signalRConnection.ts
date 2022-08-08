@@ -1,6 +1,6 @@
 import * as signalR from "@microsoft/signalr";
 import { GUI } from "./gui";
-import { Message } from "./messageInterface";
+import { Message } from "./message";
 
 export class SignalRConnection {
     // private maken
