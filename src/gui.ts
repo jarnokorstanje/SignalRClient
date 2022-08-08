@@ -1,6 +1,6 @@
 import { Message } from "./message";
 
-export abstract class GUI {
+export class GUI {
     private static messageList: HTMLUListElement = document.getElementById("messageList") as HTMLUListElement;
     private static statusText: HTMLParagraphElement = document.getElementById("statusText") as HTMLParagraphElement;
     private static connectButton: HTMLButtonElement = document.getElementById("connectButton") as HTMLButtonElement;
@@ -24,13 +24,13 @@ export abstract class GUI {
         });
     }
 
-    public static setConnected() {
+    public static setConnectedStyle() {
         GUI.disconnectButton.style.display = "inline";  
         GUI.connectButton.style.display = "none";
         GUI.statusText.style.display = "inline";
     }
 
-    public static setDisconnected() {
+    public static setDisconnectedStyle() {
         GUI.printListItem("Verbinding verbroken");
         GUI.disconnectButton.style.display = "none";  
         GUI.connectButton.style.display = "inline";

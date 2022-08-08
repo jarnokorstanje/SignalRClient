@@ -19,7 +19,7 @@ function handleMessage(message: Message) {
 }
 
 function handleMissedMessages(missedMessages: Message[]) {
-    GUI.setConnected();
+    GUI.setConnectedStyle();
 
     if (missedMessages.length > 0) {
         GUI.printMissedMessages(missedMessages);

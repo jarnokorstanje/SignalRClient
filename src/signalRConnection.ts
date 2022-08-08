@@ -28,7 +28,7 @@ export class SignalRConnection {
 
     public async disconnect(): Promise<void> {
         await this.connection.stop().catch((error) => console.error(error));
-        GUI.setDisconnected();
+        GUI.setDisconnectedStyle();
     }
 
     public async invokeMessageResponse(messageId: string) {
