@@ -1,45 +1,24 @@
-import * as signalR from "@microsoft/signalr";
 import { Message } from "./messageInterface";
 import { GUI } from "./gui";
+import { SignalRConnection } from "./signalRConnection";
 
-//TODO: klasse voor signalR
+//TODO: index klasse
 
 const userInput: HTMLInputElement  = document.getElementById("userInput") as HTMLInputElement;
 const connectButton: HTMLButtonElement = document.getElementById("connectButton") as HTMLButtonElement;
 const disconnectButton: HTMLButtonElement = document.getElementById("disconnectButton") as HTMLButtonElement;
+const signalRConnection: SignalRConnection = new SignalRConnection(handleMessage, handleMissedMessages);
 
-const connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:49153/messagehub")
-    .withAutomaticReconnect()
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
+connectButton.addEventListener("click", () => {signalRConnection.connect(userInput.value);});
 
-async function connect(): Promise<void> {
-    await connection.start().catch((error) => { 
-        console.error(error);
-        GUI.printListItem(error);
-    });
-    
-    await connection.invoke("AddToGroup", userInput.value).catch((error) => console.error(error));
-}
+disconnectButton.addEventListener("click", signalRConnection.disconnect);
 
-async function disconnect(): Promise<void> {
-    await connection.stop().catch((error) => console.error(error));
-    GUI.setDisconnected();
-}
-
-connectButton.addEventListener("click", connect);
-
-disconnectButton.addEventListener("click", disconnect);
-
-// SignalR client methods:
-connection.on("message", (message) => {
-    // return guid of message to delete at server 
-    connection.invoke("MessageResponse", message.guid);
+function handleMessage(message: Message) {
+    signalRConnection.connection.invoke("MessageResponse", message.guid);
     GUI.printMessage(message);
-});
+}
 
-connection.on("missedMessages", (missedMessages: Message[]) => {
+function handleMissedMessages(missedMessages: Message[]) {
     GUI.setConnected();
 
     if (missedMessages.length > 0) {
@@ -53,8 +32,8 @@ connection.on("missedMessages", (missedMessages: Message[]) => {
         });
 
         // return guid of each missedmessage (to delete them at the server)
-        connection.invoke("MissedMessagesResponse", guidArray);
+        signalRConnection.connection.invoke("MissedMessagesResponse", guidArray);
     } else {
         GUI.printListItem("Verbonden met SignalR, er zijn geen gemiste berichten");
     }
-});
+}
