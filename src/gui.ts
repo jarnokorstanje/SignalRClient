@@ -2,6 +2,7 @@ import { Message } from "./message";
 
 export class GUI {
     private static messageList: HTMLUListElement = document.getElementById("messageList") as HTMLUListElement;
+    private static statusText: HTMLParagraphElement = document.getElementById("statusText") as HTMLParagraphElement;
 
     public static printListItem(text: string) {
         const li = document.createElement("li");
@@ -19,5 +20,9 @@ export class GUI {
         missedMessages.forEach(message => {
             GUI.printMessage(message);
         });
+    }
+
+    public static connectionAmount(amount: number) {
+        GUI.statusText.innerHTML = "Aantal connecties: " + amount;
     }
 }

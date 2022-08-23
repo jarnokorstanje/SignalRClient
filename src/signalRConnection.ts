@@ -9,8 +9,8 @@ export class SignalRConnection {
     constructor(username: string) {
         this.username = username;
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:49153/messagehub")
-            // .withUrl("https://signalrprototype.azurewebsites.net/messagehub")
+            // .withUrl("https://localhost:49153/messagehub")
+            .withUrl("https://signalrprototype.azurewebsites.net/messagehub")
             .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Information)
             .build();
@@ -23,6 +23,9 @@ export class SignalRConnection {
     public async connect(username: string): Promise<void> {
         try {
             await this.connection.start();
+            // GUI.printListItem(`${this.username} verbonden`);
+
+            // Azure kan niet zo goed omgaan met deze invoke, daarom is het toevoegen aan de groep niet getest, puur alleen de connecties.
             await this.connection.invoke("AddToGroup", username);
         } catch(error) {
             console.error(error);
@@ -57,7 +60,7 @@ export class SignalRConnection {
                 console.error(error);
             }
         } else {
-            GUI.printListItem(`${this.username} verbonden, er zijn geen gemiste berichten`);
+            GUI.printListItem(`${this.username} verbonden`);
         }
     }
 }

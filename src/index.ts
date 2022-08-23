@@ -3,7 +3,7 @@ import { SignalRConnection } from "./signalRConnection";
 
 class SignalRClient {
     // set amount of connections to test
-    private connectionAmountToTest = 20;
+    private connectionAmountToTest = 250;
 
     constructor() {
         this.loadTest();
@@ -11,11 +11,17 @@ class SignalRClient {
 
     public async loadTest() {
         GUI.printListItem(`${this.connectionAmountToTest} connecties opzetten...`);
+        let highestConnectionIndex = 0;
 
         for (let i = 0; i < this.connectionAmountToTest; i++) {
-            const username = "user" + i;
+            const username = "connection" + i;
             const connection = new SignalRConnection(username);
-            connection.connect(username);
+            await connection.connect(username);
+
+            if (i > highestConnectionIndex) {
+                highestConnectionIndex = i;
+                GUI.connectionAmount(i + 1);
+            }
         }
     }
 }
