@@ -8,7 +8,6 @@ export class SignalRConnection {
     constructor(handleMessage: (message: Message) => void, handleMissedMessages: (missedMessages: Message[]) => void) {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl("https://localhost:49153/messagehub")
-            // .withUrl("https://signalrprototype.azurewebsites.net/messagehub")
             .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Information)
             .build();
